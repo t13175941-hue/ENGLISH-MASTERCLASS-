@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium English Masterclass | Shruti Mam</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* === Neon Green, Ivory & Yellow Theme === */
+        :root {
+            --bg-deep: #050806; 
+            --glass-bg: rgba(12, 18, 15, 0.75);
+            
+            --neon-green: #39FF14;
+            --ivory: #FFFFF0;
+            --yellow: #FFEA00;
+            --bluish-mint: #00FFCC; 
+            
+            --glass-border: rgba(255, 255, 240, 0.15); 
+            
+            --text-main: var(--ivory);
+            --text-muted: rgba(255, 255, 240, 0.6);
+            
+            --correct-grad: linear-gradient(135deg, #065F46 0%, #047857 100%);
+            --wrong-grad: linear-gradient(135deg, #991B1B 0%, #BE123C 100%);
+            
+            --font-ui: 'Montserrat', sans-serif;
+            --font-luxury: 'Cinzel', serif;
+            --smooth-ease: cubic-bezier(0.2, 0.8, 0.2, 1.05);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font-ui);
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+            padding-bottom: 140px;
+        }
+
+        /* === Hardware-Accelerated Ambient Background === */
+        .ambient-canvas {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: -1; overflow: hidden; pointer-events: none;
+            background: radial-gradient(circle at 50% 0%, #0B110D 0%, var(--bg-deep) 100%);
+        }
+        .glow-orb {
+            position: absolute; border-radius: 50%; filter: blur(150px);
+            will-change: transform;
+            animation: floatOrb 25s infinite alternate ease-in-out;
+        }
+        .orb-left { width: 55vw; height: 55vw; background: rgba(57, 255, 20, 0.12); top: -15%; left: -20%; }
+        .orb-right { width: 50vw; height: 50vw; background: rgba(255, 234, 0, 0.1); bottom: -10%; right: -15%; animation-delay: -12s; }
+        .orb-center { width: 45vw; height: 45vw; background: rgba(255, 255, 240, 0.05); top: 20%; left: 25%; animation-delay: -5s; animation-duration: 30s;}
+
+        @keyframes floatOrb {
+            0% { transform: translate3d(0, 0, 0) scale(1); }
+            100% { transform: translate3d(8vw, 8vh, 0) scale(1.15); }
+        }
+
+        .highlight, .highlight-alt {
+            color: var(--bluish-mint);
+            font-weight: 700;
+            text-shadow: 0 0 15px rgba(0, 255, 204, 0.6); 
+            background: rgba(0, 255, 204, 0.15);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        /* === Briefing Room (Start Screen) === */
+        .welcome-screen {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(5, 8, 6, 0.9); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            display: flex; justify-content: center; align-items: flex-start;
+            overflow-y: auto; padding: 40px 20px;
+            z-index: 2000; transition: opacity 0.6s ease, visibility 0.6s;
+            will-change: opacity;
+        }
+        .welcome-screen.hidden { opacity: 0; visibility: hidden; }
+
+        .briefing-card {
+            background: linear-gradient(180deg, rgba(20, 25, 22, 0.95), rgba(10, 15, 12, 0.98));
+            border: 1px solid var(--neon-green); border-radius: 20px;
+            padding: 40px; max-width: 650px; width: 100%; text-align: center;
+            margin: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.9), 0 0 30px rgba(57, 255, 20, 0.2);
+            will-change: transform; animation: pulseCard 4s infinite alternate ease-in-out;
+        }
+        @keyframes pulseCard { from { transform: scale(1); } to { transform: scale(1.015); } }
+
+        .briefing-title { font-family: var(--font-luxury); font-size: 2.5rem; color: var(--ivory); line-height: 1.1; margin-bottom: 5px; text-shadow: 0 4px 15px rgba(255, 255, 240, 0.3);}
+        .briefing-subtitle { color: var(--yellow); font-size: 0.85rem; font-weight: 700; letter-spacing: 5px; text-transform: uppercase; margin-bottom: 35px; }
+        
+        .protocol-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 35px; text-align: left; }
+        .protocol-item { background: rgba(255,255,240,0.03); border: 1px solid var(--glass-border); padding: 20px; border-radius: 12px; transition: transform 0.3s ease, border-color 0.3s, background 0.3s; will-change: transform; }
+        .protocol-item:hover { transform: translateY(-5px); border-color: var(--neon-green); background: rgba(57, 255, 20, 0.05);}
+        .protocol-icon { font-size: 1.6rem; margin-bottom: 12px; color: var(--yellow); }
+        .protocol-title { font-family: var(--font-luxury); font-size: 1.15rem; color: var(--ivory); margin-bottom: 6px; font-weight: 600; }
+        .protocol-desc { font-size: 0.85rem; color: var(--text-muted); line-height: 1.5; }
+
+        .start-btn {
+            background: linear-gradient(135deg, var(--neon-green), #2BBF0F); color: #000;
+            font-family: var(--font-ui); font-size: 1rem; font-weight: 700;
+            padding: 16px 45px; border: none; border-radius: 100px;
+            text-transform: uppercase; letter-spacing: 2px; cursor: pointer;
+            box-shadow: 0 10px 25px rgba(57, 255, 20, 0.4); transition: all 0.3s ease;
+            will-change: transform;
+        }
+        .start-btn:hover { transform: scale(1.05) translateY(-2px); box-shadow: 0 15px 35px rgba(57, 255, 20, 0.6); }
+
+        /* === Dashboard Header === */
+        header {
+            max-width: 1000px; margin: 50px auto 40px; padding: 0 20px;
+            display: flex; justify-content: space-between; align-items: center;
+            opacity: 0; transform: translateY(-15px); transition: opacity 0.8s ease 0.3s, transform 0.8s ease 0.3s;
+            will-change: opacity, transform;
+        }
+        body.started header { opacity: 1; transform: translateY(0); }
+
+        .title-wrapper { position: relative; }
+        .title-wrapper h1 {
+            font-family: var(--font-luxury); font-size: 3.2rem; line-height: 1.2;
+            background: linear-gradient(to right, var(--ivory), var(--neon-green), var(--yellow), var(--ivory));
+            background-size: 300% auto; -webkit-background-clip: text; color: transparent;
+            animation: shine 6s linear infinite; font-weight: 700; margin-bottom: 5px;
+        }
+        @keyframes shine { to { background-position: 200% center; } }
+        .title-wrapper p { 
+            color: var(--text-muted); font-size: 0.85rem; font-weight: 600; 
+            letter-spacing: 6px; text-transform: uppercase; position: relative; display: inline-block;
+        }
+        .title-wrapper p::after {
+            content: ''; position: absolute; bottom: -10px; left: 0;
+            width: 50px; height: 3px; background: var(--yellow); border-radius: 3px;
+            box-shadow: 0 0 15px var(--yellow);
+        }
+
+        /* HUD */
+        .hud-container { display: flex; gap: 15px; }
+        .hud-box {
+            background: linear-gradient(145deg, rgba(20, 25, 22, 0.6), rgba(10, 12, 11, 0.8));
+            border: 1px solid var(--glass-border); border-top: 1px solid rgba(255, 255, 240, 0.4);
+            border-radius: 16px; padding: 12px 25px; text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.6); min-width: 130px;
+            backdrop-filter: blur(10px);
+        }
+        .hud-box small { display: block; color: var(--text-muted); font-size: 0.65rem; letter-spacing: 2px; text-transform: uppercase; font-weight: 600; margin-bottom: 3px;}
+        .hud-box .hud-val { font-family: var(--font-luxury); font-size: 1.9rem; color: var(--neon-green); font-weight: 600; line-height: 1.2; text-shadow: 0 0 20px rgba(57, 255, 20, 0.3); }
+
+        #timer-val { animation: pulseTime 1.5s infinite alternate; }
+        @keyframes pulseTime { from { opacity: 0.8; } to { opacity: 1; } }
+
+        /* === 3D Question Cards === */
+        main { max-width: 1000px; margin: 0 auto; padding: 0 20px; display: none; }
+        body.started main { display: block; }
+        
+        .section-banner { font-family: var(--font-luxury); font-size: 2.2rem; color: var(--yellow); margin: 50px 0 35px; text-align: center; text-shadow: 0 2px 10px rgba(0,0,0,0.8); }
+
+        .q-card {
+            background: var(--glass-bg); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border); border-top: 1px solid rgba(255, 234, 0, 0.3);
+            border-radius: 20px; padding: 40px; margin-bottom: 35px;
+            box-shadow: 0 12px 35px rgba(0,0,0,0.6);
+            transition: transform 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+            animation: slideIn 0.6s var(--smooth-ease) backwards;
+            will-change: transform, opacity;
+        }
+        .q-card:hover { transform: translateY(-5px); border-color: rgba(57, 255, 20, 0.5); box-shadow: 0 15px 45px rgba(0,0,0,0.8), 0 0 25px rgba(57, 255, 20, 0.15); }
+        @keyframes slideIn { from { opacity: 0; transform: translate3d(0, 30px, 0); } to { opacity: 1; transform: translate3d(0, 0, 0); } }
+
+        .q-badge {
+            display: inline-block; background: rgba(255, 255, 240, 0.08); border: 1px solid var(--glass-border); color: var(--ivory);
+            padding: 6px 16px; border-radius: 50px; font-size: 0.75rem; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 22px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        .q-text { font-family: var(--font-luxury); font-size: 1.55rem; font-weight: 500; color: var(--ivory); margin-bottom: 25px; line-height: 1.5; }
+
+        /* === Interactive Options === */
+        .options-container { display: flex; flex-direction: column; gap: 14px; }
+        .opt-btn {
+            background: rgba(0, 0, 0, 0.5); border: 1px solid var(--glass-border);
+            border-radius: 14px; padding: 20px 25px; cursor: pointer; text-align: left;
+            transition: transform 0.3s ease, background 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+            will-change: transform;
+        }
+        .opt-btn:hover { background: rgba(57, 255, 20, 0.05); border-color: var(--neon-green); transform: translateX(6px); box-shadow: -5px 5px 20px rgba(0,0,0,0.4); }
+        .opt-content { display: flex; justify-content: space-between; align-items: center; font-size: 1.1rem; color: var(--ivory); font-weight: 500; transition: color 0.3s; }
+
+        .logic-panel { max-height: 0; opacity: 0; overflow: hidden; transition: max-height 0.5s ease, opacity 0.4s ease; font-size: 0.95rem; line-height: 1.6; }
+        .opt-btn.active .logic-panel { max-height: 300px; opacity: 1; margin-top: 15px; padding-top: 15px; border-top: 1px dashed var(--glass-border); color: var(--ivory); }
+
+        .opt-btn.correct { background: var(--correct-grad); border-color: #34D399; box-shadow: 0 5px 20px rgba(6, 214, 160, 0.2); }
+        .opt-btn.wrong { background: var(--wrong-grad); border-color: #F87171; box-shadow: 0 5px 20px rgba(239, 71, 111, 0.2); }
+        .opt-btn.correct .opt-content, .opt-btn.correct .logic-panel, .opt-btn.wrong .opt-content, .opt-btn.wrong .logic-panel { color: #FFF; font-weight: 500;}
+
+        /* === Floating "Control Center" Dock === */
+        .control-dock {
+            position: fixed; bottom: 25px; left: 50%; transform: translate3d(-50%, 150px, 0);
+            background: rgba(10, 15, 12, 0.9); backdrop-filter: blur(25px); -webkit-backdrop-filter: blur(25px);
+            border: 1px solid var(--neon-green); border-top: 1px solid rgba(57, 255, 20, 0.5);
+            border-radius: 100px; display: flex; align-items: center; justify-content: space-between;
+            padding: 12px 18px; z-index: 100; box-shadow: 0 25px 60px rgba(0,0,0,0.95);
+            width: max-content; max-width: 95%; transition: transform 0.8s var(--smooth-ease) 0.5s;
+            will-change: transform;
+        }
+        body.started .control-dock { transform: translate3d(-50%, 0, 0); }
+
+        .tab-menu { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
+        .tab-btn {
+            background: transparent; border: none; color: var(--text-muted);
+            padding: 12px 16px; border-radius: 100px; font-family: var(--font-ui);
+            font-size: 0.85rem; font-weight: 700; cursor: pointer; transition: all 0.3s;
+            text-transform: uppercase; letter-spacing: 1.5px;
+        }
+        .tab-btn:hover { color: var(--ivory); background: rgba(255, 255, 240, 0.1); }
+        .tab-btn.active { background: linear-gradient(135deg, var(--neon-green), #2BBF0F); color: #000; box-shadow: 0 5px 20px rgba(57, 255, 20, 0.4); }
+
+        .signature-block {
+            display: flex; flex-direction: column; align-items: center;
+            margin: 0 20px; border-left: 1px solid var(--glass-border); border-right: 1px solid var(--glass-border); padding: 0 20px;
+        }
+        .sig-sub { font-size: 0.55rem; font-weight: 700; color: var(--text-muted); letter-spacing: 4px; text-transform: uppercase; margin-bottom: 2px; }
+        .sig-main { font-family: var(--font-luxury); font-size: 1.3rem; color: var(--yellow); font-weight: 600; text-transform: uppercase; letter-spacing: 2px; text-shadow: 0 0 15px rgba(255, 234, 0, 0.4);}
+
+        .report-btn {
+            background: rgba(255, 234, 0, 0.08); color: var(--yellow);
+            border: 1px solid var(--yellow); padding: 14px 28px; border-radius: 100px;
+            font-family: var(--font-ui); font-size: 0.85rem; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: all 0.3s ease; margin-left: 5px;
+            will-change: transform;
+        }
+        .report-btn:hover { background: var(--yellow); color: #000; transform: scale(1.05); box-shadow: 0 8px 25px rgba(255, 234, 0, 0.4); border-color: transparent; }
+
+        /* === Grand Report Modal === */
+        .modal-wrap {
+            position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(2, 4, 3, 0.92); backdrop-filter: blur(25px);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 1000; opacity: 0; pointer-events: none; transition: opacity 0.5s ease;
+            overflow-y: auto; padding: 20px;
+        }
+        .modal-wrap.active { opacity: 1; pointer-events: all; }
+        
+        .modal-card {
+            background: linear-gradient(180deg, rgba(20, 25, 22, 1), rgba(10, 12, 11, 1)); 
+            border: 1px solid var(--neon-green); border-radius: 24px;
+            padding: 45px; max-width: 650px; width: 100%; text-align: center; margin: auto;
+            box-shadow: 0 30px 90px rgba(0,0,0,1), 0 0 50px rgba(57, 255, 20, 0.15); 
+            transform: translate3d(0, 30px, 0) scale(0.95); transition: transform 0.5s var(--smooth-ease);
+        }
+        .modal-wrap.active .modal-card { transform: translate3d(0, 0, 0) scale(1); }
+        
+        .mod-title { font-family: var(--font-luxury); font-size: 2.5rem; color: var(--ivory); margin-bottom: 5px; line-height: 1.2; text-shadow: 0 4px 15px rgba(255, 255, 240, 0.2);}
+        .mod-subtitle { color: var(--yellow); font-size: 0.85rem; font-weight: 700; text-transform: uppercase; letter-spacing: 4px; margin-bottom: 30px; }
+        
+        /* Advanced Report Grids */
+        .mod-stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 15px; }
+        .stat-blk { background: rgba(255,255,240,0.02); border: 1px solid var(--glass-border); padding: 22px 10px; border-radius: 14px; transition: transform 0.3s ease; }
+        .stat-blk.primary { background: linear-gradient(135deg, rgba(57, 255, 20, 0.1), rgba(255, 234, 0, 0.05)); border-color: var(--neon-green); box-shadow: 0 10px 25px rgba(57, 255, 20, 0.1); }
+        .stat-blk:hover { transform: translateY(-4px); border-color: var(--yellow); }
+        .stat-blk span { display: block; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; color: var(--text-muted); margin-bottom: 8px; font-weight: 700; }
+        .stat-blk h3 { font-family: var(--font-luxury); font-size: 2.2rem; color: var(--ivory); line-height: 1; font-weight: 700; }
+        .stat-blk.primary h3 { color: var(--neon-green); text-shadow: 0 0 25px rgba(57, 255, 20, 0.4); }
+
+        .mod-details-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 35px; }
+        .stat-detail { padding: 18px 10px; border-radius: 12px; border: 1px solid var(--glass-border); background: rgba(0,0,0,0.4); }
+        .stat-detail span { display: block; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; color: var(--text-muted); font-weight: 700; }
+        .stat-detail h4 { font-family: var(--font-ui); font-size: 1.8rem; line-height: 1; font-weight: 700; }
+        
+        .correct-stat h4 { color: #10B981; text-shadow: 0 0 15px rgba(16, 185, 129, 0.3); }
+        .wrong-stat h4 { color: #F43F5E; text-shadow: 0 0 15px rgba(244, 63, 94, 0.3); }
+        .left-stat h4 { color: var(--text-muted); }
+
+        .mod-desc { color: var(--ivory); font-size: 1.05rem; margin-bottom: 35px; font-weight: 500; line-height: 1.6; background: rgba(57, 255, 20, 0.05); padding: 22px; border-radius: 12px; border: 1px solid var(--glass-border);}
+
+        @media (max-width: 950px) {
+            .protocol-grid { grid-template-columns: 1fr; gap: 12px; }
+            .briefing-card { padding: 30px 20px; }
+            .control-dock { flex-direction: column; width: 95%; border-radius: 20px; padding: 15px; gap: 15px; }
+            .signature-block { border: none; padding: 15px 0; margin: 0; width: 100%; border-top: 1px solid var(--glass-border); border-bottom: 1px solid var(--glass-border); }
+            .tab-menu { width: 100%; display: flex; flex-wrap: wrap; justify-content: center; gap: 8px; }
+            .tab-btn { padding: 10px 14px; font-size: 0.7rem; }
+            .report-btn { width: 100%; margin: 0; padding: 16px; }
+            header { flex-direction: column; gap: 30px; text-align: center; margin-top: 30px; }
+            .title-wrapper p::after { left: 50%; transform: translateX(-50%); }
+            body { padding-bottom: 280px; }
+        }
+        @media (max-width: 600px) {
+            .mod-stats-grid, .mod-details-grid { grid-template-columns: 1fr; gap: 10px; }
+            .modal-card { padding: 30px 20px; }
+            .title-wrapper h1 { font-size: 2.6rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="ambient-canvas">
+        <div class="glow-orb orb-left"></div>
+        <div class="glow-orb orb-right"></div>
+        <div class="glow-orb orb-center"></div>
+    </div>
+
+    <div class="welcome-screen" id="welcome-overlay">
+        <div class="briefing-card">
+            <h1 class="briefing-title">Executive Briefing</h1>
+            <p class="briefing-subtitle">Official Assessment Guidelines</p>
+            
+            <div class="protocol-grid">
+                <div class="protocol-item">
+                    <div class="protocol-icon">⏱️</div>
+                    <div class="protocol-title">I. Live Chronometer</div>
+                    <div class="protocol-desc">Your evaluation is <span class="highlight">strictly timed</span>. The clock engages only when you press commence.</div>
+                </div>
+                <div class="protocol-item">
+                    <div class="protocol-icon">🧠</div>
+                    <div class="protocol-title">II. Reasoning Engine</div>
+                    <div class="protocol-desc">Selecting any option dynamically deploys <span class="highlight">grammatical logic</span> for immediate review.</div>
+                </div>
+                <div class="protocol-item">
+                    <div class="protocol-icon">📊</div>
+                    <div class="protocol-title">III. Evaluation Metrics</div>
+                    <div class="protocol-desc"><span class="highlight">+1 Mark</span> for correct answers. <span style="color:#F43F5E; font-weight:700;">-0.5 Mark</span> penalty for incorrect. Unattempted yields <span class="highlight">0</span>.</div>
+                </div>
+                <div class="protocol-item">
+                    <div class="protocol-icon">📑</div>
+                    <div class="protocol-title">IV. Dynamic Navigation</div>
+                    <div class="protocol-desc">Utilize the <span class="highlight">Control Desk</span> hovering at the bottom to transition smoothly between all 5 sections.</div>
+                </div>
+            </div>
+
+            <button class="start-btn" onclick="initiateAssessment()">Commence Assessment</button>
+        </div>
+    </div>
+
+    <header>
+        <div class="title-wrapper">
+            <h1>English</h1>
+            <p>Advanced Assessment</p>
+        </div>
+        <div class="hud-container">
+            <div class="hud-box">
+                <small>Time Elapsed</small>
+                <div class="hud-val" id="timer-val">00:00</div>
+            </div>
+            <div class="hud-box">
+                <small>Attempted</small>
+                <div class="hud-val" id="score-val">0/0</div>
+            </div>
+        </div>
+    </header>
+
+    <main id="quiz-board"></main>
+
+    <div class="control-dock">
+        <div class="tab-menu">
+            <button class="tab-btn active" onclick="changeSection('A')">Sec 1</button>
+            <button class="tab-btn" onclick="changeSection('B')">Sec 2</button>
+            <button class="tab-btn" onclick="changeSection('C')">Sec 3</button>
+            <button class="tab-btn" onclick="changeSection('D')">Sec 4</button>
+            <button class="tab-btn" onclick="changeSection('E')">Sec 5</button>
+        </div>
+        
+        <div class="signature-block">
+            <span class="sig-sub">Curated By</span>
+            <span class="sig-main">Shruti Mam</span>
+        </div>
+        
+        <button class="report-btn" onclick="generateReport()">Generate Report</button>
+    </div>
+
+    <div class="modal-wrap" id="result-modal">
+        <div class="modal-card">
+            <div class="mod-title">Academic Report Card</div>
+            <div class="mod-subtitle">Official Performance Evaluation</div>
+            
+            <div class="mod-stats-grid">
+                <div class="stat-blk primary">
+                    <span>Total Marks</span>
+                    <h3 id="mod-marks-text">0</h3>
+                </div>
+                <div class="stat-blk">
+                    <span>Accuracy</span>
+                    <h3 id="mod-acc-text">0%</h3>
+                </div>
+                <div class="stat-blk">
+                    <span>Time Taken</span>
+                    <h3 id="mod-time-text">0m 0s</h3>
+                </div>
+            </div>
+
+            <div class="mod-details-grid">
+                <div class="stat-detail correct-stat">
+                    <span>Correct (+1)</span>
+                    <h4 id="mod-correct-text">0</h4>
+                </div>
+                <div class="stat-detail wrong-stat">
+                    <span>Wrong (-0.5)</span>
+                    <h4 id="mod-wrong-text">0</h4>
+                </div>
+                <div class="stat-detail left-stat">
+                    <span>Skipped (0)</span>
+                    <h4 id="mod-left-text">0</h4>
+                </div>
+            </div>
+
+            <div class="mod-desc" id="mod-msg-text">Analyzing your performance...</div>
+            <button class="report-btn" style="width: 100%; margin:0;" onclick="hideModal()">Review Assessment</button>
+            
+            <div style="margin-top: 25px; padding-top: 25px; border-top: 1px solid var(--glass-border);">
+                <span class="sig-sub">Certified Evaluator</span>
+                <span class="sig-main" style="display:block; margin-top:8px; font-size:1.5rem;">Shruti Mam</span>
+            </div>
+        </div>
+    </div>
+
+    <script src="questions.js"></script>
+
+    <script>
+        let startTime;
+        let timerInterval;
+        let correctAnswersCount = 0;
+        let lockedAnswers = new Set(); 
+        let totalQuestions = 0; 
+
+        // Updated section titles to match your new database structure
+        const secBanners = {
+            "A": "Section 1: Grammar & Parajumbles",
+            "B": "Section 2: Nouns & Adjectives",
+            "C": "Section 3: Verbs, Adverbs & Transformations",
+            "D": "Section 4: Prepositions, RC & Tenses",
+            "E": "Section 5: Logical Reasoning"
+        };
+
+        function calculateTotalQuestions() {
+            totalQuestions = Object.values(database).flat().length;
+            document.getElementById('score-val').innerText = `0/${totalQuestions}`;
+        }
+
+        function initiateAssessment() {
+            calculateTotalQuestions();
+            document.getElementById('welcome-overlay').classList.add('hidden');
+            document.body.classList.add('started');
+            loadSection('A');
+
+            startTime = Date.now();
+            timerInterval = setInterval(() => {
+                const diffInSeconds = Math.floor((Date.now() - startTime) / 1000);
+                const m = String(Math.floor(diffInSeconds / 60)).padStart(2, '0');
+                const s = String(diffInSeconds % 60).padStart(2, '0');
+                document.getElementById('timer-val').innerText = `${m}:${s}`;
+            }, 1000);
+        }
+
+        function generateLogic(query, correctText, section) {
+            if (section === 'E') return `<span class="highlight">"${correctText}"</span> is the logically correct answer.`;
+            return `<span class="highlight">"${correctText}"</span> is the grammatically accurate answer according to English language rules.`;
+        }
+
+        function loadSection(key) {
+            const board = document.getElementById('quiz-board');
+            board.innerHTML = `<h2 class="section-banner">${secBanners[key]}</h2>`;
+            
+            let offset = 1;
+            const sections = ['A', 'B', 'C', 'D', 'E'];
+            for (let s of sections) {
+                if (s === key) break;
+                offset += database[s].length;
+            }
+
+            database[key].forEach((item, index) => {
+                const globalQNum = offset + index;
+                const card = document.createElement('div');
+                card.className = 'q-card';
+                card.style.animationDelay = `${index * 0.08}s`;
+                
+                let optBuilder = '';
+                const answerText = item.opts[item.ans];
+                const logic = generateLogic(item.q, answerText, key);
+
+                item.opts.forEach((opt, optIndex) => {
+                    const isRight = (optIndex === item.ans);
+                    let feedback = isRight 
+                        ? `<span class="highlight" style="color:var(--neon-green); background:transparent; padding:0; text-shadow:0 0 10px rgba(57,255,20,0.5);">Magnificent.</span> You have correctly identified "${opt}".<br><br><span style="color:var(--yellow); font-weight:700;">Logic Protocol:</span> ${logic}`
+                        : `<span style="color: #F87171; font-weight: 700; text-shadow: 0 0 10px rgba(248, 113, 113, 0.4);">Incorrect.</span> You selected "${opt}". The absolute answer is <strong>"${answerText}"</strong>.<br><br><span style="color:var(--yellow); font-weight:700;">Logic Protocol:</span> ${logic}`;
+                    
+                    optBuilder += `
+                        <div class="opt-btn" onclick="handleChoice(this, ${globalQNum}, ${isRight})">
+                            <div class="opt-content">
+                                <span><strong>${String.fromCharCode(65 + optIndex)}.</strong> ${opt}</span>
+                            </div>
+                            <div class="logic-panel">${feedback}</div>
+                        </div>
+                    `;
+                });
+
+                card.innerHTML = `
+                    <div class="q-badge">Question ${globalQNum} / ${totalQuestions}</div>
+                    <div class="q-text">${item.q}</div>
+                    <div class="options-container">${optBuilder}</div>
+                `;
+                board.appendChild(card);
+            });
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function handleChoice(element, qNum, isRight) {
+            const peers = element.parentElement.querySelectorAll('.opt-btn');
+            peers.forEach(p => p.classList.remove('active'));
+            element.classList.add('active');
+
+            if (!element.classList.contains('correct') && !element.classList.contains('wrong')) {
+                if (isRight) {
+                    element.classList.add('correct');
+                    if (!lockedAnswers.has(qNum)) {
+                        correctAnswersCount++;
+                    }
+                } else {
+                    element.classList.add('wrong');
+                }
+                
+                if(!lockedAnswers.has(qNum)) {
+                    lockedAnswers.add(qNum);
+                    document.getElementById('score-val').innerText = `${lockedAnswers.size}/${totalQuestions}`;
+                }
+            }
+        }
+
+        window.changeSection = function(key) {
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            loadSection(key);
+        };
+
+        window.generateReport = function() {
+            clearInterval(timerInterval); 
+            
+            const totalSeconds = Math.floor((Date.now() - startTime) / 1000);
+            const m = Math.floor(totalSeconds / 60);
+            const s = totalSeconds % 60;
+            
+            const attempted = lockedAnswers.size;
+            const correct = correctAnswersCount;
+            const wrong = attempted - correct;
+            const left = totalQuestions - attempted;
+            
+            // Formula: Correct (+1) & Wrong (-0.5)
+            const maxMarks = totalQuestions * 1;
+            const obtainedMarks = (correct * 1) - (wrong * 0.5);
+            
+            let accuracy = attempted === 0 ? 0 : Math.round((correct / attempted) * 100);
+            
+            document.getElementById('mod-marks-text').innerText = `${obtainedMarks}/${maxMarks}`;
+            document.getElementById('mod-acc-text').innerText = `${accuracy}%`;
+            document.getElementById('mod-time-text').innerText = `${m}m ${s}s`;
+            
+            document.getElementById('mod-correct-text').innerText = correct;
+            document.getElementById('mod-wrong-text').innerText = wrong;
+            document.getElementById('mod-left-text').innerText = left;
+            
+            const percentage = (obtainedMarks / maxMarks) * 100;
+            const msgBox = document.getElementById('mod-msg-text');
+            
+            if (percentage >= 80) msgBox.innerHTML = "<span class='highlight' style='background:transparent; padding:0; text-shadow:0 0 10px rgba(57,255,20,0.5); color:var(--neon-green);'>Masterclass Tier.</span> Your grasp of the subject is absolutely spectacular.";
+            else if (percentage >= 60) msgBox.innerHTML = "<span class='highlight' style='background:transparent; padding:0; text-shadow:0 0 10px rgba(255,234,0,0.5); color:var(--yellow);'>Exceptional.</span> You demonstrate a highly sophisticated understanding.";
+            else if (percentage >= 40) msgBox.innerHTML = "<span class='highlight' style='background:transparent; padding:0; text-shadow:0 0 15px rgba(0,255,204,0.6);'>Strong Competence.</span> Keep reading and practicing to sharpen your edge.";
+            else msgBox.innerHTML = "<span style='color:#F43F5E; font-weight:700;'>Fundamental Review Needed.</span> Negative marking impacted your score. Carefully review your rules and try again.";
+            
+            document.getElementById('result-modal').classList.add('active');
+        };
+
+        window.hideModal = function() {
+            document.getElementById('result-modal').classList.remove('active');
+            
+            startTime = Date.now() - (parseInt(document.getElementById('mod-time-text').innerText.split('m')[0]) * 60000 + parseInt(document.getElementById('mod-time-text').innerText.split(' ')[1].replace('s','')) * 1000);
+            timerInterval = setInterval(() => {
+                const diffInSeconds = Math.floor((Date.now() - startTime) / 1000);
+                const m = String(Math.floor(diffInSeconds / 60)).padStart(2, '0');
+                const s = String(diffInSeconds % 60).padStart(2, '0');
+                document.getElementById('timer-val').innerText = `${m}:${s}`;
+            }, 1000);
+        };
+    </script>
+</body>
+</html>
